@@ -1,26 +1,29 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-import java.awt.LayoutManager2;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Random;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import javax.swing.border.Border;
 
 public class Surface extends JPanel implements ActionListener{
 	Random rd = new Random();
@@ -30,6 +33,8 @@ public class Surface extends JPanel implements ActionListener{
 	int size; // 
 	int action;
 	int gameType, gameLevel;
+	// 
+	
 	Bait bait;
 	/*
 	 * gameStatus
@@ -169,6 +174,48 @@ public class Surface extends JPanel implements ActionListener{
         this.cb2.setVisible(true);
         this.btnStart.setVisible(true);
     }
+
+	private String getHighSoccer() {
+		
+		String HighSoccer = null;
+		try {
+			File f = new File("HighSoccer.txt");
+			if (!f.exists()) {
+				f.createNewFile();
+				FileWriter fwr = new FileWriter(f);
+				BufferedWriter bw = new BufferedWriter(fwr);
+				fwr.write("0");
+				return "0";
+			}
+			FileReader fr = new FileReader(f);
+			// Bước 2: Đọc dữ liệu
+			BufferedReader br = new BufferedReader(fr);
+			HighSoccer = br.readLine();
+			// Bước 3: Đóng luồng
+			fr.close();
+			br.close();
+			return HighSoccer;
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return HighSoccer;
+	}
+	private void newHighSoccer(int HighSoccer) {
+		File f = new File("HighSoccer.txt");
+		try {
+			// Nếu file tồn tại xóa đi ghi lại
+			if(f.exists()) {
+				f.delete();
+				f.createNewFile();
+			}
+			// Ghi High Soccer mới
+			FileWriter fwr = new FileWriter(f);
+			fwr.write(Integer.toString(HighSoccer));
+			fwr.close();
+		} catch (Exception e) {
+			
+		}
+	}
 	private void drawMainMenu() {
 		
 		this.lb1.setLocation(30,405);
@@ -181,6 +228,12 @@ public class Surface extends JPanel implements ActionListener{
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		// Draw HighSoccer
+		String HighSoccer = getHighSoccer();
+		g.setFont(new Font("Cosolas", Font.BOLD, 15));
+		g.setColor(Color.red);
+		g.drawString("High Soccer : " + HighSoccer, 250, 430);
+		// Draw Rect
 		g.setColor(Color.black);
 		g.drawRect(0, 0, width, width);
 		if (gameStatus != 0) {
@@ -249,7 +302,11 @@ public class Surface extends JPanel implements ActionListener{
 			}
 			switch (isImpact()) {
 			case 1:
-				JOptionPane.showMessageDialog(null, "Game Over!\nSoccer: " + snake.length);
+				JOptionPane.showMessageDialog(null, "Game Over!\nSoccer: " + (snake.length - 5));
+				int HighSoccer = Integer.parseInt(getHighSoccer());
+				if(snake.length - 5 > HighSoccer) {
+					newHighSoccer(snake.length - 5);
+				}
 				gameStatus = 0;
 				timer.stop();
 				break;
@@ -259,6 +316,10 @@ public class Surface extends JPanel implements ActionListener{
 				break;
 			case 3:
 				JOptionPane.showMessageDialog(null, "Game Over!\nSoccer: " + (snake.length - 5));
+				int HighSoccer2 = Integer.parseInt(getHighSoccer());
+				if(snake.length - 5 > HighSoccer2) {
+					newHighSoccer(snake.length - 5);
+				}
 				gameStatus = 0;
 				timer.stop();
 				break;
