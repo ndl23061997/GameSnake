@@ -10,9 +10,10 @@ public class Window extends JFrame {
 	}
 	private void init() {
 		this.setTitle("Snake");
-		this.setSize(500, 500);
+		this.setSize(400, 500);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(false);
 		add(new Surface(400));
 	}
 }
