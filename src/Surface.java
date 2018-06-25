@@ -146,7 +146,7 @@ public class Surface extends JPanel implements ActionListener{
 					gameLevel = 200;
 					break;
 				case 2:
-					gameLevel = 100;
+					gameLevel = 50;
 					break;
 				}
 				initTimer(gameLevel);

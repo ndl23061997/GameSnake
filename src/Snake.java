@@ -1,7 +1,3 @@
-import java.awt.Rectangle;
-import java.awt.geom.Line2D;
-
-import javax.sound.sampled.Line;
 
 public class Snake {
 	Node node[];
